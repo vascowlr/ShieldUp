@@ -1,5 +1,6 @@
 import ReportFeed from "@/components/ReportFeed";
 import { Shield, Info, Activity } from "lucide-react";
+import Link from "next/link";
 
 export default function Home() {
   const mockReports = [
@@ -49,19 +50,19 @@ export default function Home() {
             Um ambiente seguro e anônimo para reportar, analisar e prevenir de forma efetiva casos de bullying nas escolas e organizações.
           </p>
           <div className="flex gap-4 pt-4">
-            <button className="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-xl transition-all shadow-lg hover:shadow-indigo-500/25 flex items-center gap-2">
+            <Link href="/nova-denuncia" className="px-6 py-3 bg-indigo-600 hover:bg-indigo-700 text-white font-medium rounded-xl transition-all shadow-lg hover:shadow-indigo-500/25 flex items-center gap-2">
               <Activity className="w-5 h-5" />
               Nova Denúncia
-            </button>
-            <button className="px-6 py-3 glass hover:bg-slate-800 text-white font-medium rounded-xl transition-all flex items-center gap-2">
+            </Link>
+            <a href="#feed" className="px-6 py-3 glass hover:bg-slate-800 text-white font-medium rounded-xl transition-all flex items-center gap-2">
               <Info className="w-5 h-5" />
               Saiba Mais
-            </button>
+            </a>
           </div>
         </header>
 
         {/* Dashboard/Feed Section */}
-        <section className="animate-in fade-in duration-700">
+        <section id="feed" className="animate-in fade-in duration-700">
           <ReportFeed reports={mockReports} loading={false} />
         </section>
       </div>
