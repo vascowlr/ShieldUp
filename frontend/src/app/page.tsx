@@ -59,6 +59,17 @@ export default function Home() {
               Saiba Mais
             </a>
           </div>
+          <p className="text-slate-400 text-sm mt-2">
+            Se precisar conversar com alguém, digite <span className="font-semibold text-white">188</span> no seu telefone ou acesse o site:{" "}
+            <a
+              href="https://cvv.org.br/"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-cyan-400 hover:text-cyan-300 underline transition-colors"
+            >
+              cvv.org.br
+            </a>
+          </p>
         </header>
 
         {/* Dashboard/Feed Section */}
