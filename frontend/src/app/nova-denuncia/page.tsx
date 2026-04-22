@@ -10,6 +10,8 @@ export default function NovaDenuncia() {
         description: "",
         category: "Físico",
         location: "",
+        institutionType: "Escola",
+        institutionName: "",
         isAnonymous: true,
     });
 
@@ -96,6 +98,32 @@ export default function NovaDenuncia() {
                                 className="w-full bg-slate-900/50 border border-slate-700/50 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
                                 value={formData.location}
                                 onChange={(e) => setFormData({ ...formData, location: e.target.value })}
+                            />
+                        </div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div className="space-y-2">
+                            <label className="text-sm font-medium text-slate-300">Tipo de Instituição</label>
+                            <select
+                                className="w-full bg-slate-900/50 border border-slate-700/50 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all appearance-none"
+                                value={formData.institutionType}
+                                onChange={(e) => setFormData({ ...formData, institutionType: e.target.value })}
+                            >
+                                <option value="Escola">Escola</option>
+                                <option value="Empresa">Empresa</option>
+                                <option value="Outro">Outro</option>
+                            </select>
+                        </div>
+
+                        <div className="space-y-2">
+                            <label className="text-sm font-medium text-slate-300">Nome da Instituição (opcional)</label>
+                            <input
+                                type="text"
+                                placeholder="Nome da escola ou empresa"
+                                className="w-full bg-slate-900/50 border border-slate-700/50 rounded-lg px-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
+                                value={formData.institutionName}
+                                onChange={(e) => setFormData({ ...formData, institutionName: e.target.value })}
                             />
                         </div>
                     </div>

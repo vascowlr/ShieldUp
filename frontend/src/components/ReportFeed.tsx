@@ -1,7 +1,7 @@
 'use client';
 
 import { useState } from 'react';
-import { ShieldAlert, Clock, MapPin, User, Tag, Search, Filter } from 'lucide-react';
+import { ShieldAlert, Clock, MapPin, User, Tag, Search, Filter, Building2 } from 'lucide-react';
 
 type Report = {
     id: string;
@@ -9,6 +9,8 @@ type Report = {
     description: string;
     category: string;
     location?: string;
+    institutionType?: string;
+    institutionName?: string;
     isAnonymous: boolean;
     authorName: string;
     date: string;
@@ -17,15 +19,20 @@ type Report = {
 export default function ReportFeed({ reports, loading }: { reports: Report[], loading: boolean }) {
     const [searchTerm, setSearchTerm] = useState('');
     const [filterCategory, setFilterCategory] = useState('Todas');
+    const [filterInstitutionType, setFilterInstitutionType] = useState('Todas');
 
     const filteredReports = reports.filter(report => {
-        const matchesSearch = report.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        const matchesSearch = Boolean(
+            report.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
             report.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-            (report.location && report.location.toLowerCase().includes(searchTerm.toLowerCase()));
+            (report.location?.toLowerCase().includes(searchTerm.toLowerCase())) ||
+            (report.institutionName?.toLowerCase().includes(searchTerm.toLowerCase()))
+        );
 
         const matchesCategory = filterCategory === 'Todas' || report.category === filterCategory;
+        const matchesInstitution = filterInstitutionType === 'Todas' || report.institutionType === filterInstitutionType;
 
-        return matchesSearch && matchesCategory;
+        return matchesSearch && matchesCategory && matchesInstitution;
     });
 
     if (loading) {
@@ -77,6 +84,19 @@ export default function ReportFeed({ reports, loading }: { reports: Report[], lo
                         <option value="Outro">Outro</option>
                     </select>
                 </div>
+                <div className="relative sm:w-48">
+                    <Building2 className="absolute left-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-slate-400 z-10" />
+                    <select
+                        className="w-full bg-slate-900/50 border border-slate-700/50 rounded-lg pl-9 pr-4 py-2.5 text-sm text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all appearance-none"
+                        value={filterInstitutionType}
+                        onChange={(e) => setFilterInstitutionType(e.target.value)}
+                    >
+                        <option value="Todas">Todas Instituições</option>
+                        <option value="Escola">Escolas</option>
+                        <option value="Empresa">Empresas</option>
+                        <option value="Outro">Outras</option>
+                    </select>
+                </div>
             </div>
 
             {filteredReports.length === 0 ? (
@@ -112,9 +132,15 @@ export default function ReportFeed({ reports, loading }: { reports: Report[], lo
                                         {report.location}
                                     </div>
                                 )}
+                                {report.institutionName && (
+                                    <div className="flex items-center gap-1.5 bg-slate-900/50 px-2 py-1 rounded-md">
+                                        <Building2 className="w-3.5 h-3.5" />
+                                        {report.institutionName} ({report.institutionType})
+                                    </div>
+                                )}
                                 <div className="flex items-center gap-1.5 bg-slate-900/50 px-2 py-1 rounded-md">
                                     <Clock className="w-3.5 h-3.5" />
-                                    {new Date(report.date).toLocaleDateString('pt-BR')} as {new Date(report.date).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
+                                    {new Date(report.date).toLocaleDateString('pt-BR')} às {new Date(report.date).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
                                 </div>
                             </div>
                         </div>

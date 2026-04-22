@@ -10,6 +10,8 @@ export default function Home() {
       description: "Um grupo de alunos mais velhos estava intimidando alunos menores no pátio durante o intervalo.",
       category: "Físico",
       location: "Pátio Principal",
+      institutionType: "Escola",
+      institutionName: "Escola Estadual São Pedro",
       isAnonymous: true,
       authorName: "Anônimo",
       date: new Date().toISOString()
@@ -19,6 +21,8 @@ export default function Home() {
       title: "Mensagens ofensivas",
       description: "Tomei conhecimento sobre mensagens de ódio e cyberbullying sendo espalhadas em um grupo escolar público.",
       category: "Cyberbullying",
+      institutionType: "Empresa",
+      institutionName: "Tech Solutions S.A.",
       isAnonymous: false,
       authorName: "João S.",
       date: new Date(Date.now() - 86400000).toISOString()
@@ -29,6 +33,8 @@ export default function Home() {
       description: "Uma aluna tem sido sistematicamente excluída das atividades em grupo e isolada durante o recreio.",
       category: "Social",
       location: "Sala 204",
+      institutionType: "Escola",
+      institutionName: "Colégio Santa Maria",
       isAnonymous: true,
       authorName: "Anônimo",
       date: new Date(Date.now() - 172800000).toISOString()
