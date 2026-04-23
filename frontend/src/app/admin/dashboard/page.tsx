@@ -35,6 +35,18 @@ export default function AdminDashboard() {
         router.push("/");
     };
 
+    const handleUpdateStatus = (id: string, status: any) => {
+        storage.updateReportStatus(id, status);
+        setReports(storage.getReports() as any);
+    };
+
+    const handleDelete = (id: string) => {
+        if (confirm("Tem certeza que deseja excluir esta denúncia permanentemente?")) {
+            storage.deleteReport(id);
+            setReports(storage.getReports() as any);
+        }
+    };
+
     if (loading) {
         return (
             <div className="min-h-screen bg-[#0f172a] text-white flex items-center justify-center">
@@ -92,8 +104,8 @@ export default function AdminDashboard() {
                     </div>
                 ) : (
                     <div className="grid gap-6">
-                        {reports.map((report) => (
-                            <div key={report._id} className="glass rounded-2xl overflow-hidden border border-slate-700/50 hover:border-indigo-500/50 transition-all group">
+                        {reports.map((report: any) => (
+                            <div key={report.id} className="glass rounded-2xl overflow-hidden border border-slate-700/50 hover:border-indigo-500/50 transition-all group">
                                 <div className="flex flex-col md:flex-row">
                                     {report.imageUrl && (
                                         <div className="md:w-64 h-48 md:h-auto bg-slate-900 border-r border-slate-700/50">
@@ -161,6 +173,41 @@ export default function AdminDashboard() {
                                                     <p className="text-[10px] uppercase font-bold text-slate-500">Instituição</p>
                                                     <p className="font-medium text-slate-200">{report.institutionName || 'Não informada'}</p>
                                                 </div>
+                                            </div>
+                                        </div>
+                                        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 pt-4 border-t border-slate-800">
+                                            <div className="flex items-center gap-4">
+                                                <div className="flex items-center gap-2">
+                                                    <p className="text-[10px] uppercase font-bold text-slate-500">Status Atual:</p>
+                                                    <span className={`px-2 py-0.5 rounded text-[10px] font-bold uppercase border ${
+                                                        report.status === 'Resolvida' ? 'bg-green-500/10 border-green-500/30 text-green-400' :
+                                                        report.status === 'Em Andamento' ? 'bg-amber-500/10 border-amber-500/30 text-amber-400' :
+                                                        'bg-slate-500/10 border-slate-500/30 text-slate-400'
+                                                    }`}>
+                                                        {report.status}
+                                                    </span>
+                                                </div>
+                                            </div>
+
+                                            <div className="flex flex-wrap gap-2">
+                                                <button 
+                                                    onClick={() => handleUpdateStatus(report.id, 'Em Andamento')}
+                                                    className="flex items-center gap-2 px-3 py-1.5 bg-amber-500/10 hover:bg-amber-500/20 text-amber-500 rounded-lg transition-all text-xs font-bold border border-amber-500/20"
+                                                >
+                                                    Marcar em Andamento
+                                                </button>
+                                                <button 
+                                                    onClick={() => handleUpdateStatus(report.id, 'Resolvida')}
+                                                    className="flex items-center gap-2 px-3 py-1.5 bg-green-500/10 hover:bg-green-500/20 text-green-500 rounded-lg transition-all text-xs font-bold border border-green-500/20"
+                                                >
+                                                    Marcar como Resolvida
+                                                </button>
+                                                <button 
+                                                    onClick={() => handleDelete(report.id)}
+                                                    className="flex items-center gap-2 px-3 py-1.5 bg-red-500/10 hover:bg-red-500 text-red-500 hover:text-white rounded-lg transition-all text-xs font-bold border border-red-500/20"
+                                                >
+                                                    Excluir
+                                                </button>
                                             </div>
                                         </div>
                                     </div>

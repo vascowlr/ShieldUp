@@ -15,6 +15,7 @@ type Report = {
     authorName: string;
     imageUrl?: string;
     createdAt: string;
+    status: 'Pendente' | 'Em Andamento' | 'Resolvida';
 };
 
 export default function ReportFeed({ reports, loading }: { reports: Report[], loading: boolean }) {
@@ -123,10 +124,19 @@ export default function ReportFeed({ reports, loading }: { reports: Report[], lo
                             <div className="p-5 flex flex-col flex-1">
                                 <div className="flex justify-between items-start mb-3">
                                     <h4 className="text-lg font-semibold text-white">{report.title}</h4>
-                                    <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-indigo-500/20 text-indigo-300 flex items-center gap-1">
-                                        <Tag className="w-3 h-3" />
-                                        {report.category}
-                                    </span>
+                                    <div className="flex flex-col items-end gap-2">
+                                        <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-indigo-500/20 text-indigo-300 flex items-center gap-1">
+                                            <Tag className="w-3 h-3" />
+                                            {report.category}
+                                        </span>
+                                        <span className={`text-[10px] font-bold px-2 py-0.5 rounded-md border ${
+                                            report.status === 'Resolvida' ? 'bg-green-500/10 border-green-500/30 text-green-400' :
+                                            report.status === 'Em Andamento' ? 'bg-amber-500/10 border-amber-500/30 text-amber-400' :
+                                            'bg-slate-500/10 border-slate-500/30 text-slate-400'
+                                        }`}>
+                                            {report.status.toUpperCase()}
+                                        </span>
+                                    </div>
                                 </div>
 
                                 <p className="text-slate-300 text-sm mb-4 leading-relaxed line-clamp-3">

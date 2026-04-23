@@ -62,7 +62,7 @@ export default function AdminLogin() {
                             <input
                                 required
                                 type="text"
-                                placeholder="admin"
+                                placeholder="Digite seu usuário..."
                                 className="w-full bg-slate-900/50 border border-slate-700/50 rounded-lg pl-10 pr-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
                                 value={formData.username}
                                 onChange={(e) => setFormData({ ...formData, username: e.target.value })}
@@ -77,7 +77,7 @@ export default function AdminLogin() {
                             <input
                                 required
                                 type="password"
-                                placeholder="••••••••"
+                                placeholder="Digite sua senha..."
                                 className="w-full bg-slate-900/50 border border-slate-700/50 rounded-lg pl-10 pr-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
                                 value={formData.password}
                                 onChange={(e) => setFormData({ ...formData, password: e.target.value })}

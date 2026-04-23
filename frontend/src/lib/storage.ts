@@ -1,6 +1,3 @@
-// Simulação de Banco de Dados usando LocalStorage
-// Isso permite que o projeto funcione no GitHub Pages sem um servidor real
-
 export type Report = {
     id: string;
     title: string;
@@ -13,11 +10,12 @@ export type Report = {
     authorName: string;
     imageUrl?: string;
     createdAt: string;
+    status: 'Pendente' | 'Em Andamento' | 'Resolvida';
 };
 
 export type Admin = {
     username: string;
-    password: string; // Em um app real, isso nunca seria salvo puro, mas aqui é para fins didáticos/demo
+    password?: string;
 };
 
 const REPORTS_KEY = 'shieldup_reports';
@@ -31,43 +29,62 @@ export const storage = {
         return data ? JSON.parse(data) : [];
     },
 
-    saveReport: (report: Omit<Report, 'id' | 'createdAt'>): Report => {
+    saveReport: (report: Omit<Report, 'id' | 'createdAt' | 'status'>) => {
         const reports = storage.getReports();
         const newReport: Report = {
             ...report,
             id: Math.random().toString(36).substr(2, 9),
             createdAt: new Date().toISOString(),
+            status: 'Pendente'
         };
-        reports.unshift(newReport); // Adiciona no início
+        reports.unshift(newReport);
         localStorage.setItem(REPORTS_KEY, JSON.stringify(reports));
         return newReport;
     },
 
-    // Admin
+    updateReportStatus: (id: string, status: Report['status']) => {
+        const reports = storage.getReports();
+        const index = reports.findIndex(r => r.id === id);
+        if (index !== -1) {
+            reports[index].status = status;
+            localStorage.setItem(REPORTS_KEY, JSON.stringify(reports));
+            return true;
+        }
+        return false;
+    },
+
+    deleteReport: (id: string) => {
+        const reports = storage.getReports();
+        const filtered = reports.filter(r => r.id !== id);
+        localStorage.setItem(REPORTS_KEY, JSON.stringify(filtered));
+        return true;
+    },
+
+    // Administradores
     getAdmins: (): Admin[] => {
         if (typeof window === 'undefined') return [];
         const data = localStorage.getItem(ADMINS_KEY);
         return data ? JSON.parse(data) : [];
     },
 
-    registerAdmin: (admin: Admin, code: string): { success: boolean; error?: string } => {
+    registerAdmin: (admin: Admin, code: string) => {
         if (code !== 'ShieldUpADM1') {
             return { success: false, error: 'Código de registro inválido.' };
         }
         const admins = storage.getAdmins();
         if (admins.find(a => a.username === admin.username)) {
-            return { success: false, error: 'Este usuário já existe.' };
+            return { success: false, error: 'Usuário já existe.' };
         }
         admins.push(admin);
         localStorage.setItem(ADMINS_KEY, JSON.stringify(admins));
         return { success: true };
     },
 
-    loginAdmin: (credentials: Admin): { success: boolean; token?: string; error?: string } => {
+    loginAdmin: (admin: Admin) => {
         const admins = storage.getAdmins();
-        const admin = admins.find(a => a.username === credentials.username && a.password === credentials.password);
-        if (admin) {
-            return { success: true, token: 'mock_token_' + admin.username };
+        const found = admins.find(a => a.username === admin.username && a.password === admin.password);
+        if (found) {
+            return { success: true, token: 'mock-token-' + found.username };
         }
         return { success: false, error: 'Usuário ou senha incorretos.' };
     }

@@ -15,6 +15,7 @@ export default function NovaDenuncia() {
         institutionType: "Escola",
         institutionName: "",
         isAnonymous: true,
+        authorName: "",
     });
 
     const [imagePreview, setImagePreview] = useState<string | null>(null);
@@ -40,7 +41,7 @@ export default function NovaDenuncia() {
             // No GitHub Pages, salvamos no LocalStorage
             storage.saveReport({
                 ...formData,
-                authorName: formData.isAnonymous ? 'Anônimo' : 'Identificado',
+                authorName: formData.isAnonymous ? 'Anônimo' : (formData.authorName || 'Identificado'),
                 imageUrl: imagePreview || undefined, // Salvamos o Base64 da imagem
             });
 
@@ -202,17 +203,33 @@ export default function NovaDenuncia() {
                         </div>
                     </div>
 
-                    <div className="flex items-center gap-3 bg-slate-900/30 p-4 rounded-xl border border-slate-700/30">
-                        <input
-                            type="checkbox"
-                            id="anonymous"
-                            className="w-5 h-5 accent-indigo-500 rounded focus:ring-indigo-500"
-                            checked={formData.isAnonymous}
-                            onChange={(e) => setFormData({ ...formData, isAnonymous: e.target.checked })}
-                        />
-                        <label htmlFor="anonymous" className="text-sm text-slate-300 cursor-pointer select-none">
-                            Quero manter minha denúncia 100% anônima
-                        </label>
+                    <div className="flex flex-col gap-4 bg-slate-900/30 p-4 rounded-xl border border-slate-700/30">
+                        <div className="flex items-center gap-3">
+                            <input
+                                type="checkbox"
+                                id="anonymous"
+                                className="w-5 h-5 accent-indigo-500 rounded focus:ring-indigo-500"
+                                checked={formData.isAnonymous}
+                                onChange={(e) => setFormData({ ...formData, isAnonymous: e.target.checked })}
+                            />
+                            <label htmlFor="anonymous" className="text-sm text-slate-300 cursor-pointer select-none">
+                                Quero manter minha denúncia 100% anônima
+                            </label>
+                        </div>
+                        
+                        {!formData.isAnonymous && (
+                            <div className="mt-2 space-y-2 animate-in slide-in-from-top-2 duration-300">
+                                <label className="text-sm font-medium text-slate-300">Seu Nome / Identificação</label>
+                                <input
+                                    required
+                                    type="text"
+                                    placeholder="Como deseja ser identificado?"
+                                    className="w-full bg-slate-900/50 border border-slate-700/50 rounded-lg px-4 py-2.5 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
+                                    value={formData.authorName}
+                                    onChange={(e) => setFormData({ ...formData, authorName: e.target.value })}
+                                />
+                            </div>
+                        )}
                     </div>
 
                     <button 
