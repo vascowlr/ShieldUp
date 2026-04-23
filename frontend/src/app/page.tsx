@@ -38,7 +38,7 @@ export default function Home() {
           <div className="absolute top-8 right-8">
             <Link href="/admin/login" className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors text-sm font-medium glass px-4 py-2 rounded-lg">
               <Lock className="w-4 h-4" />
-              Área Administrativa
+              Login Administrador
             </Link>
           </div>
           <div className="w-20 h-20 bg-indigo-600 rounded-full flex items-center justify-center shadow-[0_0_40px_rgba(79,70,229,0.5)] mb-4">

@@ -62,10 +62,11 @@ export default function AdminRegister() {
                         <label className="text-sm font-medium text-slate-300">Código de Registro</label>
                         <div className="relative">
                             <Key className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
-                            <input
+                             <input
                                 required
                                 type="text"
-                                placeholder="ShieldUpADM1"
+                                autoComplete="off"
+                                placeholder="Digite o código de convite..."
                                 className="w-full bg-slate-900/50 border border-slate-700/50 rounded-lg pl-10 pr-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
                                 value={formData.registrationCode}
                                 onChange={(e) => setFormData({ ...formData, registrationCode: e.target.value })}
@@ -77,10 +78,11 @@ export default function AdminRegister() {
                         <label className="text-sm font-medium text-slate-300">Usuário</label>
                         <div className="relative">
                             <UserPlus className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
-                            <input
+                             <input
                                 required
                                 type="text"
-                                placeholder="admin"
+                                autoComplete="off"
+                                placeholder="Escolha um nome de usuário..."
                                 className="w-full bg-slate-900/50 border border-slate-700/50 rounded-lg pl-10 pr-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
                                 value={formData.username}
                                 onChange={(e) => setFormData({ ...formData, username: e.target.value })}
@@ -92,10 +94,11 @@ export default function AdminRegister() {
                         <label className="text-sm font-medium text-slate-300">Senha</label>
                         <div className="relative">
                             <Lock className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-500" />
-                            <input
+                             <input
                                 required
                                 type="password"
-                                placeholder="••••••••"
+                                autoComplete="new-password"
+                                placeholder="Crie uma senha forte..."
                                 className="w-full bg-slate-900/50 border border-slate-700/50 rounded-lg pl-10 pr-4 py-3 text-white focus:outline-none focus:ring-2 focus:ring-indigo-500 transition-all"
                                 value={formData.password}
                                 onChange={(e) => setFormData({ ...formData, password: e.target.value })}
