@@ -11,9 +11,12 @@ export default function AdminDashboard() {
     const [reports, setReports] = useState([]);
     const [loading, setLoading] = useState(true);
     const [adminUser, setAdminUser] = useState("");
+    const [mounted, setMounted] = useState(false);
     const router = useRouter();
 
     useEffect(() => {
+        setMounted(true);
+
         const token = localStorage.getItem("adminToken");
         const user = localStorage.getItem("adminUser");
 

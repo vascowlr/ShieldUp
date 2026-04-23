@@ -10,8 +10,10 @@ import { storage } from "@/lib/storage";
 export default function Home() {
   const [reports, setReports] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
+    setMounted(true);
     // Carregar denúncias do LocalStorage
     const data = storage.getReports();
     
@@ -29,6 +31,8 @@ export default function Home() {
     
     setLoading(false);
   }, []);
+
+  if (!mounted) return null;
 
   return (
     <main className="min-h-screen bg-[#0f172a] text-white p-4 md:p-8">

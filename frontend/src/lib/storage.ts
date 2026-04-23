@@ -22,11 +22,25 @@ const REPORTS_KEY = 'shieldup_reports';
 const ADMINS_KEY = 'shieldup_admins';
 
 export const storage = {
-    // Relatórios
     getReports: (): Report[] => {
         if (typeof window === 'undefined') return [];
-        const data = localStorage.getItem(REPORTS_KEY);
-        return data ? JSON.parse(data) : [];
+        try {
+            const data = localStorage.getItem(REPORTS_KEY);
+            if (!data) return [];
+            const parsed = JSON.parse(data);
+            
+            // Correção automática: garante que cada denúncia tenha id e status
+            return Array.isArray(parsed) ? parsed.map((r: any) => ({
+                ...r,
+                id: r.id || r._id || Math.random().toString(36).substr(2, 9),
+                status: r.status || 'Pendente',
+                authorName: r.authorName || (r.isAnonymous ? 'Anônimo' : 'Identificado'),
+                createdAt: r.createdAt || new Date().toISOString()
+            })) : [];
+        } catch (e) {
+            console.error("Erro ao ler LocalStorage", e);
+            return [];
+        }
     },
 
     saveReport: (report: Omit<Report, 'id' | 'createdAt' | 'status'>) => {
@@ -60,11 +74,14 @@ export const storage = {
         return true;
     },
 
-    // Administradores
     getAdmins: (): Admin[] => {
         if (typeof window === 'undefined') return [];
-        const data = localStorage.getItem(ADMINS_KEY);
-        return data ? JSON.parse(data) : [];
+        try {
+            const data = localStorage.getItem(ADMINS_KEY);
+            return data ? JSON.parse(data) : [];
+        } catch {
+            return [];
+        }
     },
 
     registerAdmin: (admin: Admin, code: string) => {
