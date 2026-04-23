@@ -49,6 +49,7 @@ export default function AdminDashboard() {
             setReports(storage.getReports() as any);
         }
     };
+    if (!mounted) return null;
 
     if (loading) {
         return (
