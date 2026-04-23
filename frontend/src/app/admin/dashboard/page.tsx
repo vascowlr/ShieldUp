@@ -1,11 +1,12 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { Shield, LogOut, Search, Clock, User, Tag, MapPin, Building2, AlertCircle } from "lucide-react";
 import Link from "next/link";
 
 import { storage } from "@/lib/storage";
+import ReportFeed from "@/components/ReportFeed";
 
 export default function AdminDashboard() {
     const [reports, setReports] = useState([]);
@@ -59,6 +60,7 @@ export default function AdminDashboard() {
             setReports(data as any);
         }
     };
+
     if (!mounted) return null;
 
     if (loading) {
@@ -100,48 +102,50 @@ export default function AdminDashboard() {
             </nav>
 
             <div className="max-w-7xl mx-auto p-6 space-y-8">
+                {/* Header */}
                 <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div>
                         <h1 className="text-2xl font-bold">Gerenciamento de Denúncias</h1>
                         <p className="text-slate-400 text-sm">Visualize e gerencie todas as ocorrências reportadas pelos usuários.</p>
                     </div>
-                    {/* Dashboard Stats */}
-                    <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-                        <div className="glass p-6 rounded-2xl border border-slate-700/50">
-                            <p className="text-slate-400 text-sm font-medium mb-1">Total de Denúncias</p>
-                            <h3 className="text-3xl font-bold text-white">{reports.length}</h3>
-                        </div>
-                        <div className="glass p-6 rounded-2xl border border-slate-700/50">
-                            <p className="text-slate-400 text-sm font-medium mb-1">Pendentes</p>
-                            <h3 className="text-3xl font-bold text-amber-500">
-                                {reports.filter((r: any) => r.status === 'Pendente' || !r.status).length}
-                            </h3>
-                        </div>
-                        <div className="glass p-6 rounded-2xl border border-slate-700/50">
-                            <p className="text-slate-400 text-sm font-medium mb-1">Resolvidas</p>
-                            <h3 className="text-3xl font-bold text-green-500">
-                                {reports.filter((r: any) => r.status === 'Resolvida').length}
-                            </h3>
-                        </div>
+                </div>
+
+                {/* Dashboard Stats */}
+                <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+                    <div className="glass p-6 rounded-2xl border border-slate-700/50">
+                        <p className="text-slate-400 text-sm font-medium mb-1">Total de Denúncias</p>
+                        <h3 className="text-3xl font-bold text-white">{reports.length}</h3>
+                    </div>
+                    <div className="glass p-6 rounded-2xl border border-slate-700/50">
+                        <p className="text-slate-400 text-sm font-medium mb-1">Pendentes</p>
+                        <h3 className="text-3xl font-bold text-amber-500">
+                            {reports.filter((r: any) => r.status === 'Pendente' || !r.status).length}
+                        </h3>
+                    </div>
+                    <div className="glass p-6 rounded-2xl border border-slate-700/50">
+                        <p className="text-slate-400 text-sm font-medium mb-1">Resolvidas</p>
+                        <h3 className="text-3xl font-bold text-green-500">
+                            {reports.filter((r: any) => r.status === 'Resolvida').length}
+                        </h3>
+                    </div>
+                </div>
+
+                {/* Main Content */}
+                <div className="space-y-6">
+                    <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                        <h2 className="text-xl font-bold flex items-center gap-2">
+                            <Search className="w-5 h-5 text-indigo-400" />
+                            Gerenciar Ocorrências
+                        </h2>
                     </div>
 
-                    {/* Main Content */}
-                    <div className="space-y-6">
-                        <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                            <h2 className="text-xl font-bold flex items-center gap-2">
-                                <Search className="w-5 h-5 text-indigo-400" />
-                                Gerenciar Ocorrências
-                            </h2>
-                        </div>
-
-                        <ReportFeed 
-                            reports={reports} 
-                            loading={loading} 
-                            isAdmin={true}
-                            onUpdateStatus={handleUpdateStatus}
-                            onDelete={handleDelete}
-                        />
-                    </div>
+                    <ReportFeed 
+                        reports={reports} 
+                        loading={loading} 
+                        isAdmin={true}
+                        onUpdateStatus={handleUpdateStatus}
+                        onDelete={handleDelete}
+                    />
                 </div>
             </div>
         </main>
