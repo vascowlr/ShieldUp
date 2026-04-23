@@ -13,7 +13,8 @@ type Report = {
     institutionName?: string;
     isAnonymous: boolean;
     authorName: string;
-    date: string;
+    imageUrl?: string;
+    createdAt: string;
 };
 
 export default function ReportFeed({ reports, loading }: { reports: Report[], loading: boolean }) {
@@ -106,47 +107,53 @@ export default function ReportFeed({ reports, loading }: { reports: Report[], lo
                     <p className="text-sm text-slate-400">Tente ajustar os filtros de busca.</p>
                 </div>
             ) : (
-                <div className="space-y-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                     {filteredReports.map((report) => (
-                        <div key={report.id} className="glass rounded-xl p-5 hover:bg-slate-800/40 transition-colors border-l-4 border-l-indigo-500">
-                            <div className="flex justify-between items-start mb-3">
-                                <h4 className="text-lg font-semibold text-white">{report.title}</h4>
-                                <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-indigo-500/20 text-indigo-300 flex items-center gap-1">
-                                    <Tag className="w-3 h-3" />
-                                    {report.category}
-                                </span>
-                            </div>
-
-                            <p className="text-slate-300 text-sm mb-4 leading-relaxed">
-                                {report.description}
-                            </p>
-
-                            <div className="flex flex-wrap items-center gap-4 text-xs font-medium text-slate-400">
-                                <div className="flex items-center gap-1.5 bg-slate-900/50 px-2 py-1 rounded-md">
-                                    <User className="w-3.5 h-3.5" />
-                                    {report.isAnonymous ? 'Anônimo' : report.authorName}
+                        <div key={report.id} className="glass rounded-xl overflow-hidden hover:bg-slate-800/40 transition-colors border-l-4 border-l-indigo-500 flex flex-col">
+                            {report.imageUrl && (
+                                <div className="w-full h-48 bg-slate-900">
+                                    <img 
+                                        src={report.imageUrl} 
+                                        alt={report.title} 
+                                        className="w-full h-full object-cover"
+                                    />
                                 </div>
-                                {report.location && (
+                            )}
+                            <div className="p-5 flex flex-col flex-1">
+                                <div className="flex justify-between items-start mb-3">
+                                    <h4 className="text-lg font-semibold text-white">{report.title}</h4>
+                                    <span className="text-xs font-medium px-2.5 py-1 rounded-full bg-indigo-500/20 text-indigo-300 flex items-center gap-1">
+                                        <Tag className="w-3 h-3" />
+                                        {report.category}
+                                    </span>
+                                </div>
+
+                                <p className="text-slate-300 text-sm mb-4 leading-relaxed line-clamp-3">
+                                    {report.description}
+                                </p>
+
+                                <div className="mt-auto flex flex-wrap items-center gap-4 text-xs font-medium text-slate-400">
                                     <div className="flex items-center gap-1.5 bg-slate-900/50 px-2 py-1 rounded-md">
-                                        <MapPin className="w-3.5 h-3.5" />
-                                        {report.location}
+                                        <User className="w-3.5 h-3.5" />
+                                        {report.isAnonymous ? 'Anônimo' : report.authorName}
                                     </div>
-                                )}
-                                {report.institutionName && (
+                                    {report.location && (
+                                        <div className="flex items-center gap-1.5 bg-slate-900/50 px-2 py-1 rounded-md">
+                                            <MapPin className="w-3.5 h-3.5" />
+                                            {report.location}
+                                        </div>
+                                    )}
                                     <div className="flex items-center gap-1.5 bg-slate-900/50 px-2 py-1 rounded-md">
-                                        <Building2 className="w-3.5 h-3.5" />
-                                        {report.institutionName} ({report.institutionType})
+                                        <Clock className="w-3.5 h-3.5" />
+                                        {new Date(report.createdAt).toLocaleDateString('pt-BR')}
                                     </div>
-                                )}
-                                <div className="flex items-center gap-1.5 bg-slate-900/50 px-2 py-1 rounded-md">
-                                    <Clock className="w-3.5 h-3.5" />
-                                    {new Date(report.date).toLocaleDateString('pt-BR')} às {new Date(report.date).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })}
                                 </div>
                             </div>
                         </div>
                     ))}
                 </div>
             )}
+
         </div>
     );
 }

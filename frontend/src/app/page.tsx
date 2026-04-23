@@ -1,51 +1,46 @@
+"use client";
+
 import ReportFeed from "@/components/ReportFeed";
-import { Shield, Info, Activity } from "lucide-react";
+import { Shield, Info, Activity, Lock } from "lucide-react";
 import Link from "next/link";
+import { useEffect, useState } from "react";
+
+import { storage } from "@/lib/storage";
 
 export default function Home() {
-  const mockReports = [
-    {
-      id: "1",
-      title: "Assédio no pátio",
-      description: "Um grupo de alunos mais velhos estava intimidando alunos menores no pátio durante o intervalo.",
-      category: "Físico",
-      location: "Pátio Principal",
-      institutionType: "Escola",
-      institutionName: "Escola Estadual São Pedro",
-      isAnonymous: true,
-      authorName: "Anônimo",
-      date: new Date().toISOString()
-    },
-    {
-      id: "2",
-      title: "Mensagens ofensivas",
-      description: "Tomei conhecimento sobre mensagens de ódio e cyberbullying sendo espalhadas em um grupo escolar público.",
-      category: "Cyberbullying",
-      institutionType: "Empresa",
-      institutionName: "Tech Solutions S.A.",
-      isAnonymous: false,
-      authorName: "João S.",
-      date: new Date(Date.now() - 86400000).toISOString()
-    },
-    {
-      id: "3",
-      title: "Exclusão intencional",
-      description: "Uma aluna tem sido sistematicamente excluída das atividades em grupo e isolada durante o recreio.",
-      category: "Social",
-      location: "Sala 204",
-      institutionType: "Escola",
-      institutionName: "Colégio Santa Maria",
-      isAnonymous: true,
-      authorName: "Anônimo",
-      date: new Date(Date.now() - 172800000).toISOString()
+  const [reports, setReports] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    // Carregar denúncias do LocalStorage
+    const data = storage.getReports();
+    
+    // Se estiver vazio, vamos colocar as mockadas iniciais para não ficar vazio no primeiro acesso
+    if (data.length === 0) {
+        const initialReports = [
+            { title: "Assédio no pátio", description: "Ocorrência registrada durante o intervalo.", category: "Físico", isAnonymous: true, authorName: "Anônimo", createdAt: new Date().toISOString() },
+            { title: "Cyberbullying em grupo", description: "Mensagens ofensivas em rede social.", category: "Cyberbullying", isAnonymous: false, authorName: "João S.", createdAt: new Date(Date.now() - 86400000).toISOString() }
+        ];
+        initialReports.forEach(r => storage.saveReport(r as any));
+        setReports(storage.getReports() as any);
+    } else {
+        setReports(data as any);
     }
-  ];
+    
+    setLoading(false);
+  }, []);
 
   return (
     <main className="min-h-screen bg-[#0f172a] text-white p-4 md:p-8">
       <div className="max-w-5xl mx-auto space-y-12">
         {/* Header Section */}
         <header className="flex flex-col items-center justify-center text-center space-y-4 py-12">
+          <div className="absolute top-8 right-8">
+            <Link href="/admin/login" className="flex items-center gap-2 text-slate-400 hover:text-white transition-colors text-sm font-medium glass px-4 py-2 rounded-lg">
+              <Lock className="w-4 h-4" />
+              Área Administrativa
+            </Link>
+          </div>
           <div className="w-20 h-20 bg-indigo-600 rounded-full flex items-center justify-center shadow-[0_0_40px_rgba(79,70,229,0.5)] mb-4">
             <Shield className="w-10 h-10 text-white" />
           </div>
@@ -62,7 +57,7 @@ export default function Home() {
             </Link>
             <a href="#feed" className="px-6 py-3 glass hover:bg-slate-800 text-white font-medium rounded-xl transition-all flex items-center gap-2">
               <Info className="w-5 h-5" />
-              Saiba Mais
+              Ver Feed
             </a>
           </div>
           <p className="text-slate-400 text-sm mt-2">
@@ -80,9 +75,10 @@ export default function Home() {
 
         {/* Dashboard/Feed Section */}
         <section id="feed" className="animate-in fade-in duration-700">
-          <ReportFeed reports={mockReports} loading={false} />
+          <ReportFeed reports={reports} loading={loading} />
         </section>
       </div>
     </main>
   );
 }
+

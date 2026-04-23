@@ -4,6 +4,8 @@ import { useState } from "react";
 import Link from "next/link";
 import { ArrowLeft, Send, ShieldAlert, AlertTriangle } from "lucide-react";
 
+import { storage } from "@/lib/storage";
+
 export default function NovaDenuncia() {
     const [formData, setFormData] = useState({
         title: "",
@@ -15,14 +17,44 @@ export default function NovaDenuncia() {
         isAnonymous: true,
     });
 
+    const [image, setImage] = useState<File | null>(null);
+    const [imagePreview, setImagePreview] = useState<string | null>(null);
+    const [loading, setLoading] = useState(false);
     const [submitted, setSubmitted] = useState(false);
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) {
+            setImage(file);
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setImagePreview(reader.result as string);
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        // Simulate submission
-        setTimeout(() => {
-            setSubmitted(true);
-        }, 1000);
+        setLoading(true);
+
+        try {
+            // No GitHub Pages, salvamos no LocalStorage
+            storage.saveReport({
+                ...formData,
+                authorName: formData.isAnonymous ? 'Anônimo' : 'Identificado',
+                imageUrl: imagePreview || undefined, // Salvamos o Base64 da imagem
+            });
+
+            setTimeout(() => {
+                setSubmitted(true);
+                setLoading(false);
+            }, 800);
+        } catch (error) {
+            console.error("Error submitting report:", error);
+            alert("Erro ao salvar a denúncia localmente.");
+            setLoading(false);
+        }
     };
 
     if (submitted) {
@@ -140,6 +172,37 @@ export default function NovaDenuncia() {
                         ></textarea>
                     </div>
 
+                    <div className="space-y-2">
+                        <label className="text-sm font-medium text-slate-300">Adicionar Fotos (evidências)</label>
+                        <div className="flex flex-col gap-4">
+                            <input
+                                type="file"
+                                accept="image/*"
+                                onChange={handleImageChange}
+                                className="block w-full text-sm text-slate-400
+                                file:mr-4 file:py-2 file:px-4
+                                file:rounded-full file:border-0
+                                file:text-sm file:font-semibold
+                                file:bg-indigo-600 file:text-white
+                                hover:file:bg-indigo-700 transition-all"
+                            />
+                            {imagePreview && (
+                                <div className="relative w-full h-48 rounded-xl overflow-hidden border border-slate-700">
+                                    <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
+                                    <button 
+                                        type="button"
+                                        onClick={() => { setImage(null); setImagePreview(null); }}
+                                        className="absolute top-2 right-2 p-1 bg-red-500 rounded-full text-white hover:bg-red-600 transition-colors"
+                                    >
+                                        <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M6 18L18 6M6 6l12 12" />
+                                        </svg>
+                                    </button>
+                                </div>
+                            )}
+                        </div>
+                    </div>
+
                     <div className="flex items-center gap-3 bg-slate-900/30 p-4 rounded-xl border border-slate-700/30">
                         <input
                             type="checkbox"
@@ -153,10 +216,21 @@ export default function NovaDenuncia() {
                         </label>
                     </div>
 
-                    <button type="submit" className="w-full py-4 bg-indigo-600 hover:bg-indigo-700 text-white font-bold rounded-xl transition-all shadow-lg hover:shadow-indigo-500/25 flex items-center justify-center gap-2">
-                        <Send className="w-5 h-5" />
-                        Enviar Denúncia Seguro
+                    <button 
+                        type="submit" 
+                        disabled={loading}
+                        className="w-full py-4 bg-indigo-600 hover:bg-indigo-700 disabled:bg-indigo-800 disabled:opacity-50 text-white font-bold rounded-xl transition-all shadow-lg hover:shadow-indigo-500/25 flex items-center justify-center gap-2"
+                    >
+                        {loading ? (
+                            <div className="w-6 h-6 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                        ) : (
+                            <>
+                                <Send className="w-5 h-5" />
+                                Enviar Denúncia Seguro
+                            </>
+                        )}
                     </button>
+
                 </form>
             </div>
         </main>
