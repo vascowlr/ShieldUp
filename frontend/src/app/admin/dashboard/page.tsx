@@ -97,6 +97,7 @@ export default function AdminDashboard() {
                                 <div className="flex flex-col md:flex-row">
                                     {report.imageUrl && (
                                         <div className="md:w-64 h-48 md:h-auto bg-slate-900 border-r border-slate-700/50">
+                                            {/* eslint-disable-next-line @next/next/no-img-element */}
                                             <img 
                                                 src={report.imageUrl} 
                                                 alt={report.title} 

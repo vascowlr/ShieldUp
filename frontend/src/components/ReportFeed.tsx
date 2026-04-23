@@ -112,6 +112,7 @@ export default function ReportFeed({ reports, loading }: { reports: Report[], lo
                         <div key={report.id} className="glass rounded-xl overflow-hidden hover:bg-slate-800/40 transition-colors border-l-4 border-l-indigo-500 flex flex-col">
                             {report.imageUrl && (
                                 <div className="w-full h-48 bg-slate-900">
+                                    {/* eslint-disable-next-line @next/next/no-img-element */}
                                     <img 
                                         src={report.imageUrl} 
                                         alt={report.title} 
@@ -153,7 +154,6 @@ export default function ReportFeed({ reports, loading }: { reports: Report[], lo
                     ))}
                 </div>
             )}
-
         </div>
     );
 }

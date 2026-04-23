@@ -17,7 +17,6 @@ export default function NovaDenuncia() {
         isAnonymous: true,
     });
 
-    const [image, setImage] = useState<File | null>(null);
     const [imagePreview, setImagePreview] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
     const [submitted, setSubmitted] = useState(false);
@@ -25,7 +24,6 @@ export default function NovaDenuncia() {
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
-            setImage(file);
             const reader = new FileReader();
             reader.onloadend = () => {
                 setImagePreview(reader.result as string);
@@ -188,10 +186,11 @@ export default function NovaDenuncia() {
                             />
                             {imagePreview && (
                                 <div className="relative w-full h-48 rounded-xl overflow-hidden border border-slate-700">
+                                    {/* eslint-disable-next-line @next/next/no-img-element */}
                                     <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
                                     <button 
                                         type="button"
-                                        onClick={() => { setImage(null); setImagePreview(null); }}
+                                        onClick={() => { setImagePreview(null); }}
                                         className="absolute top-2 right-2 p-1 bg-red-500 rounded-full text-white hover:bg-red-600 transition-colors"
                                     >
                                         <svg xmlns="http://www.w3.org/2000/svg" className="h-4 w-4" fill="none" viewBox="0 0 24 24" stroke="currentColor">
