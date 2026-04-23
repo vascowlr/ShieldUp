@@ -4,8 +4,8 @@ const isGithubActions = process.env.GITHUB_ACTIONS === 'true';
 
 const nextConfig: NextConfig = {
   output: "export",
-  // Se o erro 404 persistir, tente mudar o basePath para o nome exato do seu repositório no GitHub
-  basePath: isGithubActions ? "/ShieldUp" : "", 
+  // O Next.js vai descobrir o nome do seu repositório automaticamente
+  basePath: isGithubActions ? `/${process.env.GITHUB_REPOSITORY?.split('/')[1]}` : "",
   trailingSlash: true,
   images: {
     unoptimized: true,
