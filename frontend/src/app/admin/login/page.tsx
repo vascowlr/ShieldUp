@@ -16,21 +16,26 @@ export default function AdminLogin() {
     const [error, setError] = useState("");
     const router = useRouter();
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
         setError("");
 
-        const result = storage.loginAdmin(formData);
+        try {
+            const result = await storage.loginAdmin(formData);
 
-        if (result.success) {
-            localStorage.setItem("adminToken", result.token || "");
-            localStorage.setItem("adminUser", formData.username);
-            router.push("/admin/dashboard");
-        } else {
-            setError(result.error || "Erro ao fazer login.");
+            if (result.success) {
+                localStorage.setItem("adminToken", result.token || "");
+                localStorage.setItem("adminUser", formData.username);
+                router.push("/admin/dashboard");
+            } else {
+                setError(result.error || "Erro ao fazer login.");
+            }
+        } catch (err) {
+            setError("Ocorreu um erro na conexão com o banco.");
+        } finally {
+            setLoading(false);
         }
-        setLoading(false);
     };
 
     return (

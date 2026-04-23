@@ -17,23 +17,28 @@ export default function AdminRegister() {
     const [error, setError] = useState("");
     const router = useRouter();
 
-    const handleSubmit = (e: React.FormEvent) => {
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
         setError("");
 
-        const result = storage.registerAdmin(
-            { username: formData.username, password: formData.password },
-            formData.registrationCode
-        );
+        try {
+            const result = await storage.registerAdmin(
+                { username: formData.username, password: formData.password },
+                formData.registrationCode
+            );
 
-        if (result.success) {
-            alert("Administrador criado com sucesso! Faça login agora.");
-            router.push("/admin/login");
-        } else {
-            setError(result.error || "Erro ao registrar.");
+            if (result.success) {
+                alert("Administrador criado com sucesso! Faça login agora.");
+                router.push("/admin/login");
+            } else {
+                setError(result.error || "Erro ao registrar.");
+            }
+        } catch (err) {
+            setError("Erro ao conectar com o banco de dados.");
+        } finally {
+            setLoading(false);
         }
-        setLoading(false);
     };
 
     return (

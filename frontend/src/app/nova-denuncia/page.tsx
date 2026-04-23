@@ -36,22 +36,22 @@ export default function NovaDenuncia() {
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setLoading(true);
+        setError("");
 
         try {
             // No GitHub Pages, salvamos no LocalStorage
-            storage.saveReport({
+            await storage.saveReport({
                 ...formData,
                 authorName: formData.isAnonymous ? 'Anônimo' : (formData.authorName || 'Identificado'),
                 imageUrl: imagePreview || undefined, // Salvamos o Base64 da imagem
             });
 
-            setTimeout(() => {
-                setSubmitted(true);
-                setLoading(false);
-            }, 800);
-        } catch (error) {
-            console.error("Error submitting report:", error);
-            alert("Erro ao salvar a denúncia localmente.");
+            alert("Denúncia enviada com sucesso!");
+            router.push("/");
+        } catch (err) {
+            console.error(err);
+            setError("Ocorreu um erro ao enviar a denúncia. Tente novamente.");
+        } finally {
             setLoading(false);
         }
     };

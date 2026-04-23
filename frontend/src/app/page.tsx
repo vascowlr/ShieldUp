@@ -13,23 +13,19 @@ export default function Home() {
   const [mounted, setMounted] = useState(false);
 
   useEffect(() => {
-    setMounted(true);
-    // Carregar denúncias do LocalStorage
-    const data = storage.getReports();
+    const loadData = async () => {
+        setMounted(true);
+        try {
+            const data = await storage.getReports();
+            setReports(data as any);
+        } catch (error) {
+            console.error("Erro ao carregar denúncias:", error);
+        } finally {
+            setLoading(false);
+        }
+    };
     
-    // Se estiver vazio, vamos colocar as mockadas iniciais para não ficar vazio no primeiro acesso
-    if (data.length === 0) {
-        const initialReports = [
-            { title: "Assédio no pátio", description: "Ocorrência registrada durante o intervalo.", category: "Físico", isAnonymous: true, authorName: "Anônimo", createdAt: new Date().toISOString(), status: 'Pendente' },
-            { title: "Cyberbullying em grupo", description: "Mensagens ofensivas em rede social.", category: "Cyberbullying", isAnonymous: false, authorName: "João S.", createdAt: new Date(Date.now() - 86400000).toISOString(), status: 'Pendente' }
-        ];
-        initialReports.forEach(r => storage.saveReport(r as any));
-        setReports(storage.getReports() as any);
-    } else {
-        setReports(data as any);
-    }
-    
-    setLoading(false);
+    loadData();
   }, []);
 
   if (!mounted) return null;

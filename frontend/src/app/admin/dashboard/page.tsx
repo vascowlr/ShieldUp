@@ -15,21 +15,29 @@ export default function AdminDashboard() {
     const router = useRouter();
 
     useEffect(() => {
-        setMounted(true);
+        const loadDashboard = async () => {
+            setMounted(true);
+            const token = localStorage.getItem("adminToken");
+            const user = localStorage.getItem("adminUser");
 
-        const token = localStorage.getItem("adminToken");
-        const user = localStorage.getItem("adminUser");
+            if (!token) {
+                router.push("/admin/login");
+                return;
+            }
 
-        if (!token) {
-            router.push("/admin/login");
-            return;
-        }
+            setAdminUser(user || "Admin");
 
-        setAdminUser(user || "Admin");
+            try {
+                const data = await storage.getReports();
+                setReports(data as any);
+            } catch (err) {
+                console.error("Erro ao carregar dashboard:", err);
+            } finally {
+                setLoading(false);
+            }
+        };
 
-        // Carregar do LocalStorage
-        setReports(storage.getReports() as any);
-        setLoading(false);
+        loadDashboard();
     }, [router]);
 
     const handleLogout = () => {
@@ -38,15 +46,17 @@ export default function AdminDashboard() {
         router.push("/");
     };
 
-    const handleUpdateStatus = (id: string, status: any) => {
-        storage.updateReportStatus(id, status);
-        setReports(storage.getReports() as any);
+    const handleUpdateStatus = async (id: string, status: any) => {
+        await storage.updateReportStatus(id, status);
+        const data = await storage.getReports();
+        setReports(data as any);
     };
 
-    const handleDelete = (id: string) => {
+    const handleDelete = async (id: string) => {
         if (confirm("Tem certeza que deseja excluir esta denúncia permanentemente?")) {
-            storage.deleteReport(id);
-            setReports(storage.getReports() as any);
+            await storage.deleteReport(id);
+            const data = await storage.getReports();
+            setReports(data as any);
         }
     };
     if (!mounted) return null;
