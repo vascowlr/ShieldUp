@@ -1,7 +1,8 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
+import { useRouter } from "next/navigation";
 import { ArrowLeft, Send, ShieldAlert, AlertTriangle } from "lucide-react";
 
 import { storage } from "@/lib/storage";
@@ -20,11 +21,24 @@ export default function NovaDenuncia() {
 
     const [imagePreview, setImagePreview] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
-    const [submitted, setSubmitted] = useState(false);
+    const [error, setError] = useState("");
+    const [mounted, setMounted] = useState(false);
+    const router = useRouter();
+
+    useEffect(() => {
+        setMounted(true);
+    }, []);
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
+            // Limite de 1MB para fotos no banco de dados gratuito
+            if (file.size > 1024 * 1024) {
+                alert("A foto é muito grande! Por favor, escolha uma imagem de até 1MB.");
+                e.target.value = "";
+                return;
+            }
+
             const reader = new FileReader();
             reader.onloadend = () => {
                 setImagePreview(reader.result as string);
@@ -39,41 +53,23 @@ export default function NovaDenuncia() {
         setError("");
 
         try {
-            // No GitHub Pages, salvamos no LocalStorage
             await storage.saveReport({
                 ...formData,
                 authorName: formData.isAnonymous ? 'Anônimo' : (formData.authorName || 'Identificado'),
-                imageUrl: imagePreview || undefined, // Salvamos o Base64 da imagem
+                imageUrl: imagePreview || undefined,
             });
 
             alert("Denúncia enviada com sucesso!");
             router.push("/");
         } catch (err) {
             console.error(err);
-            setError("Ocorreu um erro ao enviar a denúncia. Tente novamente.");
+            setError("Ocorreu um erro ao enviar a denúncia. Verifique sua conexão.");
         } finally {
             setLoading(false);
         }
     };
 
-    if (submitted) {
-        return (
-            <main className="min-h-screen bg-[#0f172a] text-white p-4 md:p-8 flex flex-col items-center justify-center">
-                <div className="glass max-w-md w-full p-8 rounded-2xl text-center space-y-6">
-                    <div className="w-20 h-20 bg-green-500/20 text-green-400 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <ShieldAlert className="w-10 h-10" />
-                    </div>
-                    <h2 className="text-2xl font-bold">Denúncia Registrada!</h2>
-                    <p className="text-slate-300">
-                        Sua denúncia foi registrada com sucesso e nossa equipe tomará as medidas adequadas com total sigilo.
-                    </p>
-                    <Link href="/" className="inline-block mt-4 px-6 py-3 bg-indigo-600 hover:bg-indigo-700 rounded-xl transition-all font-medium">
-                        Voltar para o Início
-                    </Link>
-                </div>
-            </main>
-        );
-    }
+    if (!mounted) return null;
 
     return (
         <main className="min-h-screen bg-[#0f172a] text-white p-4 md:p-8 animate-in fade-in duration-500">
@@ -91,6 +87,12 @@ export default function NovaDenuncia() {
                         Você está em um ambiente seguro. Todas as informações fornecidas são tratadas com sigilosidade.
                     </p>
                 </div>
+
+                {error && (
+                    <div className="bg-red-500/10 border border-red-500/20 text-red-400 p-4 rounded-xl text-sm">
+                        {error}
+                    </div>
+                )}
 
                 <form onSubmit={handleSubmit} className="glass p-6 md:p-8 rounded-2xl space-y-6">
                     <div className="space-y-2">
@@ -187,7 +189,6 @@ export default function NovaDenuncia() {
                             />
                             {imagePreview && (
                                 <div className="relative w-full h-48 rounded-xl overflow-hidden border border-slate-700">
-                                    {/* eslint-disable-next-line @next/next/no-img-element */}
                                     <img src={imagePreview} alt="Preview" className="w-full h-full object-cover" />
                                     <button 
                                         type="button"
