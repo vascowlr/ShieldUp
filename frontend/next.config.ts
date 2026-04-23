@@ -4,6 +4,7 @@ const isGithubActions = process.env.GITHUB_ACTIONS === 'true';
 
 const nextConfig: NextConfig = {
   output: "export",
+  reactStrictMode: false,
   basePath: isGithubActions ? "/ShieldUp" : "",
   trailingSlash: true,
   images: {
