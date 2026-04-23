@@ -18,8 +18,8 @@ export default function Home() {
     // Se estiver vazio, vamos colocar as mockadas iniciais para não ficar vazio no primeiro acesso
     if (data.length === 0) {
         const initialReports = [
-            { title: "Assédio no pátio", description: "Ocorrência registrada durante o intervalo.", category: "Físico", isAnonymous: true, authorName: "Anônimo", createdAt: new Date().toISOString() },
-            { title: "Cyberbullying em grupo", description: "Mensagens ofensivas em rede social.", category: "Cyberbullying", isAnonymous: false, authorName: "João S.", createdAt: new Date(Date.now() - 86400000).toISOString() }
+            { title: "Assédio no pátio", description: "Ocorrência registrada durante o intervalo.", category: "Físico", isAnonymous: true, authorName: "Anônimo", createdAt: new Date().toISOString(), status: 'Pendente' },
+            { title: "Cyberbullying em grupo", description: "Mensagens ofensivas em rede social.", category: "Cyberbullying", isAnonymous: false, authorName: "João S.", createdAt: new Date(Date.now() - 86400000).toISOString(), status: 'Pendente' }
         ];
         initialReports.forEach(r => storage.saveReport(r as any));
         setReports(storage.getReports() as any);

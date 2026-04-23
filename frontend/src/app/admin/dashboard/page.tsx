@@ -184,7 +184,7 @@ export default function AdminDashboard() {
                                                         report.status === 'Em Andamento' ? 'bg-amber-500/10 border-amber-500/30 text-amber-400' :
                                                         'bg-slate-500/10 border-slate-500/30 text-slate-400'
                                                     }`}>
-                                                        {report.status}
+                                                        {report.status || 'Pendente'}
                                                     </span>
                                                 </div>
                                             </div>
